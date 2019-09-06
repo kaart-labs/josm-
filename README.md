@@ -4,4 +4,4 @@
 Farris Billy
 Andrew Piechota
 
-Doing josm stuff and things
+Updating JOSM-Style Settings to expand mapcss functionality. 
