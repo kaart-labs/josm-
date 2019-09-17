@@ -4,4 +4,4 @@
 Farris Billy
 Andrew Piechota
 
-Doing josm stuff and things
+Expanding JOSM Mappaint Style Setting functionality to include more than just boolean types. 
