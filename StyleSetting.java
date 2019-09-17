@@ -10,6 +10,7 @@ import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
+import mapcss.CSSColors.java;
 
 /**
  * Setting to customize a MapPaint style.
@@ -162,4 +163,62 @@ public interface StyleSetting {
             }
         }
     }
+
+    /**
+       * @author andrew
+       *
+       */
+      class ColorStyleSetting extends LabeledStyleSetting implements StyleSetting {
+          public final String prefKey;
+          public final CSSColors def;
+
+          public ColorStyleSetting(StyleSource parentStyle, String prefKey, String label, CSSColors def) {
+              super(parentStyle, label);
+              this.prefKey = Objects.requireNonNull(prefKey);
+              this.def = def;
+          }
+
+          /**
+           * Creates a new {@code ColorStyleSetting}.
+           * @param c cascade
+           * @param parentStyle parent style source
+           * @param key setting identifier
+           * @return newly created {@code ColorStyleSetting}
+           */
+          public static ColorStyleSetting create(Cascade c, StyleSource parentStyle, String key) {
+              System.out.println("Created ColorStyleSetting!");
+              String label = c.get("label", null, String.class);
+              if (label == null) {
+                  Logging.warn("property 'label' required for color style setting");
+                  return null;
+              }
+              CSSColors def = c.get("default", null, CSSColors.class);
+              if (def == null) {
+                  Logging.warn("property 'default' required for color style setting");
+                  return null;
+              }
+              String prefKey = parentStyle.url + ":color:" + key;
+              return new ColorStyleSetting(parentStyle, prefKey, label, def);
+          }
+
+          @Override
+          public Object getValue() {
+              String val = Config.getPref().get(prefKey, null);
+              if (val == null) return def;
+              return CSSColors.get(val);
+          }
+
+          public void setValue(Object o) {
+              if (!(o instanceof Color)) {
+                  throw new IllegalArgumentException();
+              }
+              CSSColors b = (CSSColors) o;
+              if (b == def) {
+                  Config.getPref().put(prefKey, null);
+              } else {
+                 // Config.getPref().put(prefKey, b);
+                  System.out.println("Hello.");
+              }
+          }
+      }
 }
